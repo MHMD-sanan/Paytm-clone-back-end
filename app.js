@@ -8,7 +8,7 @@ const cors=require('cors')
 // const allowedOrigins = JSON.parse(process.env.ORIGIN);
 app.use(
   cors({
-    origin: [process.env.ORIGIN],
+    origin: process.env.ORIGIN,
     methods: ['GET', 'POST', 'DELETE', 'PATCH'],
     credentials: true,
   })
