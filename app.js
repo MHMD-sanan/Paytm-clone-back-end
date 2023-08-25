@@ -5,10 +5,10 @@ const connectDb = require("./config/db");
 const PORT = process.env.PORT;
 const cors=require('cors')
 
-const allowedOrigins = JSON.parse(process.env.ORIGIN);
+// const allowedOrigins = JSON.parse(process.env.ORIGIN);
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: [process.env.ORIGIN],
     methods: ['GET', 'POST', 'DELETE', 'PATCH'],
     credentials: true,
   })
