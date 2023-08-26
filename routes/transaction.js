@@ -5,16 +5,18 @@ const transactionController = require("../controllers/transaction");
 // Middleware to authenticate requests
 router.use(require("../middlewares/authMiddleware"));
 
-//find user
+/**
+ * @route POST /api/transaction/findUser
+ * @desc Find a user by recipient email
+ * @access Private
+ */
 router.post("/findUser", transactionController.findUser);
 
-// Fund transfer route
-router.post("/transfer", transactionController.transferFunds);
-
-// Transaction history route
+/**
+ * @route GET /api/transaction/history
+ * @desc Get transaction history associated with the logged-in user
+ * @access Private
+ */
 router.get("/history", transactionController.getTransactionHistory);
-
-// Payment request route
-// router.post("/request-payment", transactionController.requestPayment);
 
 module.exports = router;

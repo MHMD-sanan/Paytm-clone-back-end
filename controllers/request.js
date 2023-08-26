@@ -4,7 +4,13 @@ const User = require("../models/User");
 const sendResponse = require("../utils/sendResponse");
 const ErrorResponse = require("../utils/errorResponse");
 
-// get all payment request
+/**
+ * Get all payment requests associated with the user
+ * @route GET /api/request
+ * @param {Object} req - Request object with user ID
+ * @param {Object} res - Response object
+ * @param {function} next - Next middleware function
+ */
 exports.getRequests = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -13,16 +19,20 @@ exports.getRequests = async (req, res, next) => {
     })
       .populate("sender")
       .populate("recipient");
-    res.status(200).json({
-      success: true,
-      requests,
-    });
+      
+    sendResponse(res, { success: true, requests }, 200);
   } catch (err) {
     next(err);
   }
 };
 
-// send request
+/**
+ * Send a payment request to another user
+ * @route POST /api/request
+ * @param {Object} req - Request object with recipient's email and amount
+ * @param {Object} res - Response object
+ * @param {function} next - Next middleware function
+ */
 exports.sendRequest = async (req, res, next) => {
   try {
     const { recipientEmail, amount } = req.body;
@@ -35,7 +45,7 @@ exports.sendRequest = async (req, res, next) => {
       amount,
     });
 
-    sendResponse(res, sender, 201);
+    sendResponse(res, { success: true }, 201);
   } catch (err) {
     next(err);
   }

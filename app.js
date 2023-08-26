@@ -1,10 +1,13 @@
+// Load environment variables from .env file
 require("dotenv").config();
-const express = require("express");
-const app = express();
-const connectDb = require("./config/db");
-const PORT = process.env.PORT;
-const cors = require("cors");
 
+// Import required libraries
+const express = require("express");
+const cors = require("cors");
+const connectDb = require("./config/db");
+const app = express();
+
+// Set up CORS middleware with allowed origins from environment variable
 const allowedOrigins = JSON.parse(process.env.ORIGIN);
 app.use(
   cors({
@@ -14,24 +17,34 @@ app.use(
   })
 );
 
+// Connect to the database
 connectDb();
 
+// Parse incoming JSON data
 app.use(express.json());
 
+// Import route handlers
 const authRoutes = require("./routes/auth");
-const transactions = require("./routes/transaction");
-const request = require("./routes/request");
-app.use("/api/auth", authRoutes);
-app.use("/api/transaction", transactions);
-app.use("/api/request", request);
-app.use("/api/otp", require("./routes/otp"));
+const transactionsRoutes = require("./routes/transaction");
+const requestRoutes = require("./routes/request");
+const otpRoutes = require("./routes/otp");
 
+// Set up route handlers
+app.use("/api/auth", authRoutes);
+app.use("/api/transaction", transactionsRoutes);
+app.use("/api/request", requestRoutes);
+app.use("/api/otp", otpRoutes);
+
+// Handle unknown routes with a 404 response
 app.all("*", (req, res) => {
-  res.send("404 page");
+  res.status(404).send("404 Not Found");
 });
 
+// Custom error handling middleware
 app.use(require("./middlewares/errorMiddleware"));
 
+// Start the server
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`server running at ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
