@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const ErrorResponse = require("../utils/errorResponse");
 const otpMailer = require("../utils/otp");
-const SendResponse = require("../utils/sendResponse");
 const User = require("../models/User");
 const Transaction = require("../models/Transaction");
 const PaymentRequest = require("../models/PaymentRequest");
@@ -30,7 +29,9 @@ exports.sendOtp = async (req, res, next) => {
       if (err) {
         return next(new ErrorResponse("Unable to send OTP", 401));
       } else {
-        SendResponse(res, { success: true }, 200);
+        res.status(200).json({
+          success: true,
+        });
       }
     });
   } catch (err) {
@@ -84,7 +85,9 @@ exports.verifyOtp = async (req, res, next) => {
         });
       }
 
-      SendResponse(res, sender, 200);
+      res.status(200).json({
+        success: true,
+      });
     } else {
       return next(new ErrorResponse("Invalid OTP", 401));
     }

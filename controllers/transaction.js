@@ -1,7 +1,5 @@
-const mongoose = require("mongoose");
 const Transaction = require("../models/Transaction");
 const User = require("../models/User");
-const sendResponse = require("../utils/sendResponse");
 const ErrorResponse = require("../utils/errorResponse");
 
 /**
@@ -21,7 +19,10 @@ exports.findUser = async (req, res, next) => {
     if (!user) {
       return next(new ErrorResponse("User not found", 401));
     }
-    sendResponse(res, { success: true, user }, 200);
+    res.status(200).json({
+      success: true,
+      user,
+    });
   } catch (err) {
     next(err);
   }
@@ -39,9 +40,14 @@ exports.getTransactionHistory = async (req, res, next) => {
     const userId = req.user._id;
     const transactions = await Transaction.find({
       $or: [{ sender: userId }, { recipient: userId }],
-    }).populate("recipient", "userName").populate("sender", "userName");
-    
-    sendResponse(res, { success: true, transactions }, 200);
+    })
+      .populate("recipient", "userName")
+      .populate("sender", "userName");
+
+    res.status(200).json({
+      success: true,
+      transactions,
+    });
   } catch (err) {
     next(err);
   }

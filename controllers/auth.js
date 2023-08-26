@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const SendResponse = require("../utils/sendResponse");
 const ErrorResponse = require("../utils/errorResponse");
 
 /**
@@ -12,11 +11,13 @@ const ErrorResponse = require("../utils/errorResponse");
 exports.register = async (req, res, next) => {
   try {
     const { userName, email, password, mobileNumber } = req.body;
-    
+
     // Check if user already exists
     const userExist = await User.findOne({ email });
     if (userExist) {
-      return next(new ErrorResponse("Email or mobile number already exists", 401));
+      return next(
+        new ErrorResponse("Email or mobile number already exists", 401)
+      );
     }
 
     // Create a new user
@@ -27,8 +28,15 @@ exports.register = async (req, res, next) => {
       mobileNumber,
     });
 
+    //get token
+    const token = await user.getSignedToken();
+
     // Send successful response
-    SendResponse(res, user, 201);
+    res.status(201).json({
+      token,
+      user,
+      success: true,
+    });
   } catch (err) {
     next(err);
   }
@@ -44,10 +52,12 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    
+
     // Check if email and password are provided
     if (!email || !password) {
-      return next(new ErrorResponse("Please provide an email and password", 401));
+      return next(
+        new ErrorResponse("Please provide an email and password", 401)
+      );
     }
 
     // Find the user by email
@@ -62,7 +72,15 @@ exports.login = async (req, res, next) => {
     }
 
     // Send successful response
-    SendResponse(res, user, 200);
+    //get token
+    const token = await user.getSignedToken();
+
+    // Send successful response
+    res.status(201).json({
+      token,
+      user,
+      success: true,
+    });
   } catch (err) {
     next(err);
   }

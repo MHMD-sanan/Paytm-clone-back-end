@@ -1,8 +1,5 @@
 const Request = require("../models/PaymentRequest");
-const Transaction = require("../models/Transaction");
 const User = require("../models/User");
-const sendResponse = require("../utils/sendResponse");
-const ErrorResponse = require("../utils/errorResponse");
 
 /**
  * Get all payment requests associated with the user
@@ -19,8 +16,11 @@ exports.getRequests = async (req, res, next) => {
     })
       .populate("sender")
       .populate("recipient");
-      
-    sendResponse(res, { success: true, requests }, 200);
+
+    res.status(200).json({
+      success: true,
+      requests,
+    });
   } catch (err) {
     next(err);
   }
@@ -39,13 +39,15 @@ exports.sendRequest = async (req, res, next) => {
     const sender = await User.findById(req.user._id);
     const recipient = await User.findOne({ email: recipientEmail });
 
-    const request = await Request.create({
+    await Request.create({
       sender: sender._id,
       recipient: recipient._id,
       amount,
     });
 
-    sendResponse(res, { success: true }, 201);
+    res.status(201).json({
+      success:true
+    })
   } catch (err) {
     next(err);
   }
