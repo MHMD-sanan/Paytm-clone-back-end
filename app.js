@@ -27,13 +27,11 @@ app.use(express.json());
 const authRoutes = require("./routes/auth");
 const transactionsRoutes = require("./routes/transaction");
 const requestRoutes = require("./routes/request");
-const otpRoutes = require("./routes/otp");
 
 // Set up route handlers
 app.use("/api/auth", authRoutes);
 app.use("/api/transaction", transactionsRoutes);
 app.use("/api/request", requestRoutes);
-app.use("/api/otp", otpRoutes);
 
 // Handle unknown routes with a 404 response
 app.all("*", (req, res) => {
